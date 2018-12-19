@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8"></meta>
+<title>欢迎登录</title>
+<link rel="stylesheet" href="/view/default/css/common.css" />
+<link rel="stylesheet" href="/view/default/css/loginregister.css" />
+<link rel="stylesheet" href="/view/default/css/valifrom.css" />
+<style>
+.form-box .input-box {
+	overflow: hidden;
+}
+</style>
+</head>
+
+<body onkeypress="if(event.keyCode==13){document.getElementById('login').click();return false;}">
+	<div class="nb">
+		<div class="ny-body ny-zsy">
+			<div class="left">
+				<img src="/view/default/img/logo.jpg" alt="" ></img>
+			</div>
+			<div class="right">
+				<div class="form-box">
+					<div class="hezuo oauth">
+						<h4>合作网站帐号登录</h4>
+						<ul>
+							<li><a href="/cxdmg-web/locaQQLogin" class="qq">QQ</a></li>
+						</ul>
+
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script src="/view/default/js/jquery-1.9.1.min.js"
+		type="text/javascript"></script>
+	<script src="/view/default/js/main.js" type="text/javascript"></script>
+	<script src="/view/default/js/users.js" type="text/javascript"></script>
+
+
+	<script>
+		$(function() {
+			loadLayer();
+		});
+		var return_url = '';
+
+		$(".hezuo li:last-child").css("margin-right", 0);
+		$(".position-input").focus(function() {
+			$(this).parent(".onfocusstyle").css({
+				"border-color" : "#abcdef"
+			}).siblings().css({
+				"border-color" : "#dedede"
+			});
+		});
+		$(".position-input").blur(function() {
+			$(this).parent(".onfocusstyle").css({
+				"border-color" : "#dedede"
+			}).siblings().css({
+				"border-color" : "#dedede"
+			});
+		});
+		$(".mh-checkbox").on("click", function() {
+			if ($(this).hasClass("checkbox-stylemh")) {
+				$(this).removeClass("checkbox-stylemh");
+				$(".zdlogin-btn").attr("checked", false);
+			} else {
+				$(this).addClass("checkbox-stylemh");
+				$(".zdlogin-btn").attr("checked", true);
+			}
+		});
+		function refreshimage(clickidimg) {
+			clickidimg.src = '/https://demo.yunec.cn/vcode-M.html?1529157344000' + '?' + Date.parse(new Date());
+		}
+		function showvode() {
+			document.getElementById('mx').style.display = 'block';
+		}
+		
+		function refreshimage(clickidimg) {
+			clickidimg.src = clickidimg.src + '?' + Date.parse(new Date());
+		}
+	</script>
+	<p style="display: none;"></p>
+</body>
+
+</html>

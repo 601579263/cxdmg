@@ -1,0 +1,18 @@
+server:
+  port: 8080
+  context-path: /cxdmg-web
+
+#thymelea模板配置
+spring:
+  thymeleaf:
+    mode: HTML5
+    prefix: classpath:/templates/
+    encoding: UTF-8
+    content-type: text/html
+    cache: false
+  resources:
+    chain:
+      strategy:
+        content:
+          enabled: true
+          paths: /**  
