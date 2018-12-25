@@ -3,12 +3,14 @@ package com.cxdmg.controller;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,14 +19,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.cxdmg.config.MD5Util;
 import com.cxdmg.model.MbUser;
+import com.cxdmg.service.MbUserService;
+import com.cxdmg.vo.MbUserVo;
 
-
-/*import com.qq.connect.QQConnectException;
-import com.qq.connect.api.OpenID;
-import com.qq.connect.api.qzone.UserInfo;
-import com.qq.connect.javabeans.AccessToken;
-import com.qq.connect.oauth.Oauth;*/
 
 
 /**
@@ -35,9 +34,8 @@ import com.qq.connect.oauth.Oauth;*/
 @Controller
 public class LoginController {
 
-	private static final String INDEX="redirect:/";//重定向到首页
-	private static final String qqrelation = "qqrelation";
-	
+	@Autowired
+	private MbUserService mbUserService;
 	
 	/**
 	 * 跳到登陆界面
@@ -49,104 +47,67 @@ public class LoginController {
 	}
 	
 	/**
-	 * 登陆具体实现
+	 * 点击登陆按钮
 	 * @return
 	 */
 	@RequestMapping(value="/toLogin")
 	@ResponseBody
-	public Map<String,Object> loginPost(MbUser mbUser) {
-		//1.调用登陆接口 获取token信息
-		System.out.println("进来登陆了");
+	public Map<String,Object> loginPost(String empId,String pwd) {
 		Map<String,Object>map=new HashMap<String,Object>();
-		map.put("msg", "进来登陆了");
+		//先加密在查询
+		pwd=MD5Util.MD5(pwd);
+		List<Map<String,Object>>list=mbUserService.findByUser(empId,pwd);
+		if(list.size()>0) {
+			map.put("msg", "验证成功");
+			map.put("code", "1");
+		}else {
+			map.put("msg", "账号或者密码错误");
+			map.put("code", "-1");
+		}
 		return map;
 	}
 	
-	
-	/*// 生成qq授权登录链接
-	@RequestMapping("/locaQQLogin")
-	public String locaQQLogin(HttpServletRequest reqest) throws QQConnectException {
-		String authorizeURL = new Oauth().getAuthorizeURL(reqest);
-		System.out.println("访问进来了,地址是locaQQLogin:"+authorizeURL);
-		return "redirect:" + authorizeURL;
-	}*/
 	/**
-	 * qq回调登陆跳转到index界面
-	 * @param reqest
-	 * @param model
-	 * @param httpSession
+	 * 注册
+	 * @param mbUserVo
 	 * @return
-	 * @throws QQConnectException
 	 */
-	/*@RequestMapping("/qqLoginCallback")
-	public String qqLoginCallback(HttpServletRequest reqest,Model model,HttpSession httpSession) throws QQConnectException {
-		// 1.获取授权码COde
-		// 2.使用授权码Code获取accessToken
-		AccessToken accessTokenOj = new Oauth().getAccessTokenByRequest(reqest);
-		if (accessTokenOj == null) {
-			reqest.setAttribute("error", "QQ授权失败");
-			return "error";
+	@RequestMapping("/register")
+	@ResponseBody
+	public Map<String,Object>register(MbUserVo mbUserVo){
+		Map<String,Object>map=new HashMap<String,Object>();
+		//判断手机号是否存在
+		List<Map<String,Object>>phoneList=mbUserService.findByUserPhone(mbUserVo.getPhone());
+		if(phoneList.size()>0) {
+			map.put("code","-1");
+			map.put("msg","手机号已存在");
+			return map;
 		}
-		String accessToken = accessTokenOj.getAccessToken();
-		if (accessToken == null) {
-			reqest.setAttribute("error", "accessToken为null");
-			return "error";
+		//判断账号是否存在
+		List<Map<String,Object>>userList=mbUserService.findByUserEmpId(mbUserVo.getEmpId());
+		if(userList.size()>0) {
+			map.put("code","-1");
+			map.put("msg","账号号已存在");
+			return map;
 		}
-		// 3.使用accessToken获取openid
-		OpenID openidOj = new OpenID(accessToken);
-		String userOpenId = openidOj.getUserOpenID();
-		//获取用户信息
-		UserInfo qzoneUserInfo = new UserInfo(accessToken, openidOj.getUserOpenID());
-		System.out.println("性别:"+qzoneUserInfo.getUserInfo().getGender());
-		System.out.println("姓名:"+qzoneUserInfo.getUserInfo().getNickname());
-		System.out.println("头像:"+qzoneUserInfo.getUserInfo().getAvatar().getAvatarURL100());
-		
-		// 4.调用会员服务接口 使用userOpenId 查找是否已经关联过账号
-		ResponseBase openUserBase = memBerServiceFeign.findByOpenIdUser(userOpenId);
-		if(openUserBase.getCode().equals(Constants.HTTP_RES_CODE_201)){
-			// 5.如果没有关联账号，跳转到关联账号页面
-			httpSession.setAttribute("qqOpenid", userOpenId);
-			return qqrelation;
+		try {
+			//注册
+			mbUserService.saveUser(mbUserVo);
+			map.put("code","1");
+			map.put("msg","注册成功");
+		} catch (Exception e) {
+			map.put("code","-1");
+			map.put("msg","注册异常");
 		}
-		//6.已经绑定账号  自动登录 将用户token信息存放在cookie中
-		LinkedHashMap dataTokenMap = (LinkedHashMap) openUserBase.getData();
-		String memberToken=(String) dataTokenMap.get("memberToken");
-		CookieUtil.addCookie(response, Constants.COOKIE_MEMBER_TOKEN, memberToken, Constants.COOKIE_TOKEN_MEMBER_TIME);
-		model.addAttribute("gender",qzoneUserInfo.getUserInfo().getGender());
-		model.addAttribute("nickName",qzoneUserInfo.getUserInfo().getNickname());
-		model.addAttribute("avatarURL",qzoneUserInfo.getUserInfo().getAvatar().getAvatarURL100());
-		
-		return "index";
-	}*/
+		return map;
+	}
 
-	// 登录请求具体提交实现
-	@RequestMapping(value = "/qqRelation", method = RequestMethod.POST)
-	public String qqRelation(HttpServletRequest request,HttpSession httpSession,Model model) {
-		// 1.获取openid
-		String qqOpenid=(String) httpSession.getAttribute("qqOpenid");
-		/*if(StringUtils.isEmpty(qqOpenid)){
-			request.setAttribute("error", "没有获取到openid");
-			return "error";
-		}*/
-		
-		// 2.调用登录接口，获取token信息
-		/*userEntity.setOpenid(qqOpenid);
-		ResponseBase loginBase = memBerServiceFeign.qqLogin(userEntity);
-		if (!loginBase.getCode().equals(Constants.HTTP_RES_CODE_200)) {
-			request.setAttribute("error", "账号或者密码错误!");
-			return LOGIN;
-		}*/
-
-		/*LinkedHashMap loginData = (LinkedHashMap) loginBase.getData();
-		String memberToken = (String) loginData.get("token");
-		if (StringUtils.isEmpty(memberToken)) {
-			request.setAttribute("error", "会话已经失效!");
-			return LOGIN;
-		}
-		// 3.将token信息存放在cookie里面
-		CookieUtil.addCookie(response, Constants.COOKIE_MEMBER_TOKEN, memberToken, Constants.COOKIE_TOKEN_MEMBER_TIME);
-		*/
-		model.addAttribute("userName", "张三");
-		return INDEX;
+	/**
+	 * 跳到忘记密码界面
+	 * @return
+	 */
+	@RequestMapping("/getForgetPwd")
+	public String getForgetPwd() {
+		return "forgetPwd";
 	}
 }

@@ -11,8 +11,8 @@
     </script>	
 </head>
 <body>
-<!--背景-->
-<div class="wel" id="background-3"></div>
+<!--背景3-->
+<div class="wel" id="background-6"></div>
 <!--左右两边云-->
 <div class="wel" id="box">
     <div class="box-1 lefp"></div>
@@ -30,11 +30,11 @@
                     <h3>登录</h3>
                 <div class="a">
                     <!--<label>账号：</label>-->
-                    <input type="text" class="in-1" placeholder="请输入账号">
+                    <input id="empId" type="text" class="in-1" placeholder="请输入账号" maxlength="20">
                 </div>
                 <div class="a">
                     <!--<label>密码：</label>-->
-                    <input type="password" class="in-1" placeholder="请输入密码">
+                    <input id="pwd" type="password" class="in-1" placeholder="请输入密码" maxlength="20">
                 </div>
                 <div class="a">
                     <button type="button" onclick="toLogin()">登录</button>
@@ -43,7 +43,7 @@
                     <div class="hr"></div>
                 </div>
                 <div class="a">
-                    <a href="#">忘记密码？</a>
+                    <a href="#" onclick="javascript:forgetPwd()">忘记密码？</a>
                 </div>
             </div>
         </form>
@@ -53,22 +53,22 @@
             <div class="flrg-1">
                 <h3>注册</h3>
                 <div class="a">
-                    <input type="text" class="in-1" placeholder="您的用户名">
+                    <input id="name" type="text" class="in-1" placeholder="您的姓名" maxlength="20">
                 </div>
                 <div class="a">
-                    <input type="password" class="in-1" placeholder="输入密码">
+                    <input id="empId1" type="text" class="in-1" placeholder="您的用户名" maxlength="20">
                 </div>
                 <div class="a">
-                    <input type="password" class="in-1" placeholder="再次确认密码">
+                    <input id="pwd1" type="password" class="in-1" placeholder="输入密码" maxlength="20">
                 </div>
                 <div class="a">
-                    <input type="text" class="in-1" placeholder="输入手机号码">
+                    <input id="phone" type="text" class="in-1" placeholder="输入手机号码" maxlength="11">
                 </div>
                 <div class="a">
-                    <input type="email" class="in-1" placeholder="输入邮箱地址">
+                    <input id="email" type="email" class="in-1" placeholder="输入邮箱地址" maxlength="20">
                 </div>
                 <div class="a">
-                    <button type="button">注册</button>
+                    <button type="button" onclick="register()">注册</button>
                 </div>
             </div>
         </form>

@@ -3,11 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <title>用户信息</title>
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">  
+	<script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+	<script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
     
 </head>
 <body>
 	<h1>用户信息</h1>
-	<table>
+	<table class="table">
 			<tr>
 				<td>序号</td>
 				<td>姓名</td>
@@ -19,7 +22,7 @@
 	        <tr>
 	        	<td th:text="${stat.index+1}"></td>	
 	        	<td th:text="${r.name}"></td>
-	        	<td th:text="${r.empId}"></td>
+	        	<td th:text="${r.emp_id}"></td>
 	        	<td th:text="${r.phone}"></td>
 	        	<td th:text="${r.email}"></td>
 	        </tr>

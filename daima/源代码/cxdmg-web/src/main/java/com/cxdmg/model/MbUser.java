@@ -40,6 +40,7 @@ public class MbUser implements Serializable {
 
 	private String phone;
 
+
 	public MbUser() {
 	}
 
