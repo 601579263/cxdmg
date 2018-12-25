@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>用户信息</title>
+    
+</head>
+<body>
+	<h1>用户信息</h1>
+	<table>
+			<tr>
+				<td>序号</td>
+				<td>姓名</td>
+				<td>账号</td>
+				<td>手机号</td>
+				<td>邮箱</td>
+			</tr>	
+	    <th:block th:each="r,stat:${list}" th:if="${list}!=null">
+	        <tr>
+	        	<td th:text="${stat.index+1}"></td>	
+	        	<td th:text="${r.name}"></td>
+	        	<td th:text="${r.empId}"></td>
+	        	<td th:text="${r.phone}"></td>
+	        	<td th:text="${r.email}"></td>
+	        </tr>
+	    </th:block>
+	</table>
+</body>
+</html>

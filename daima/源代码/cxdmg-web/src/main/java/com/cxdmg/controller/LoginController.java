@@ -1,7 +1,9 @@
 package com.cxdmg.controller;
 
 
+import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -13,6 +15,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.cxdmg.model.MbUser;
 
 
 /*import com.qq.connect.QQConnectException;
@@ -22,7 +27,11 @@ import com.qq.connect.javabeans.AccessToken;
 import com.qq.connect.oauth.Oauth;*/
 
 
-
+/**
+ * 登陆
+ * @author 60157
+ *
+ */
 @Controller
 public class LoginController {
 
@@ -43,10 +52,14 @@ public class LoginController {
 	 * 登陆具体实现
 	 * @return
 	 */
-	@RequestMapping(value="/login",method=RequestMethod.POST)
-	public String loginPost(HttpServletRequest request,HttpServletResponse response) {
+	@RequestMapping(value="/toLogin")
+	@ResponseBody
+	public Map<String,Object> loginPost(MbUser mbUser) {
 		//1.调用登陆接口 获取token信息
-		return "index";
+		System.out.println("进来登陆了");
+		Map<String,Object>map=new HashMap<String,Object>();
+		map.put("msg", "进来登陆了");
+		return map;
 	}
 	
 	
