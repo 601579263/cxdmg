@@ -77,4 +77,16 @@ public class MbUserService {
 		mb.setPhone(mbUserVo.getPhone());
 		mbUserRepository.save(mb);
 	}
+	/**
+	 * 修改密码
+	 * @param id
+	 * @param pwd
+	 */
+	@Transactional
+	public void updateNewPwd(String id,String pwd) {
+		pwd=MD5Util.MD5(pwd);
+		MbUser mb=mbUserRepository.findOne(id);
+		mb.setPassword(pwd);
+		mbUserRepository.save(mb);
+	}
 }

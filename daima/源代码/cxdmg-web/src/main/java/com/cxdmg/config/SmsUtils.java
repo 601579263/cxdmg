@@ -22,7 +22,7 @@ public class SmsUtils {
 	// 短信应用SDK AppKey
 	private static String appkey = "9967d29daf2f900085638f62865b1f16";
 	// 需要发送短信的手机号码
-	private static String[] phoneNumbers = {"15284307857"};
+	//private static String[] phoneNumbers = {"15284307859"};
 	// 短信模板ID，需要在短信应用中申请
 	// NOTE: 这里的模板ID`7839`只是一个示例，真实的模板ID需要在短信控制台中申请
 	private static int templateId = 247134; 
@@ -31,7 +31,7 @@ public class SmsUtils {
 	// NOTE: 这里的签名"腾讯云"只是一个示例，真实的签名需要在短信控制台中申请，另外签名参数使用的是`签名内容`，而不是`签名ID`
 	private static String smsSign = "小逗的一天";
 	
-	public void sendSms(String[] params) {
+	public static String sendSms(String[] params,String[] phoneNumbers) {
 		try {
 			//验证码
 			//String[] params= {"123456"};
@@ -40,6 +40,7 @@ public class SmsUtils {
 		    	// 签名参数未提供或者为空时，会使用默认签名发送短信
 		        templateId, params, smsSign, "", "");  
 		    System.out.println(result);
+		    return result.toString();
 		} catch (HTTPException e) {
 		    // HTTP响应码错误
 		    e.printStackTrace();
@@ -50,6 +51,7 @@ public class SmsUtils {
 		    // 网络IO错误
 		    e.printStackTrace();
 		}
+		return "";
 	}
 	
 }
