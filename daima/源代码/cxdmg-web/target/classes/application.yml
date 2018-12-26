@@ -48,4 +48,20 @@ spring:
         strategy: org.hibernate.cfg.ImprovedNamingStrategy
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.MySQL5Dialect    
+        dialect: org.hibernate.dialect.MySQL5Dialect
+        
+        
+  mail:
+    host: smtp.qq.com
+    username: 601579263@qq.com
+    password: bpedkpauhuhwbbgj
+    enable:  true
+    smtp:
+      auth: true
+    starttls:
+      enable: true
+      required: true   
+
+msg: 
+  subject: 小逗的一天,提示您注册成功邮件。
+  text:  恭喜您的账户{},注册成功       

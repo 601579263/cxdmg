@@ -62,6 +62,16 @@ function register(){
 		alert("手机号格式不正确");
 		return;
 	}
+	var yzm=$("#yzm").val();
+	var verificationCode=$("#verificationCode").val();
+	if(verificationCode==""){
+		alert("验证码不能为空");
+		return;
+	}
+	if(verificationCode!=yzm){
+		alert("验证码不正确");
+		return;
+	}
 	
 	//对电子邮件的验证   
 	var myreg = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;
@@ -126,7 +136,8 @@ function sendOut(){
 			type:'post',
 			dataType:'json',
 			data:{				
-				phone:phone
+				phone:phone,
+				templateId:'255433'
 			},
 			success:function(data){
 				if(data.code=="-1"){
@@ -198,5 +209,51 @@ function updateNewPwd(){
 				window.location.href=ctx+"/user/getUserList";
 			}
 		});
+}
+
+
+//注册发送验证码
+function registerSendOut(){
+	//开始发送验证码
+	var url=ctx+"/sendOut";
+	var phone=$("#phone").val();
+	if(phone==""){
+		alert("手机号不能为空");
+		return;
+	}
+	var flag=isPoneAvailable(phone);
+	if(!flag){
+		alert("手机号格式不正确");
+		return;
+	}
+	$.ajax({
+			url:url,
+			type:'post',
+			dataType:'json',
+			data:{				
+				phone:phone,
+				templateId:'255535'
+			},
+			success:function(data){
+				if(data.code=="-1"){
+					alert(data.msg);
+					return;
+				}
+				$("#yzm").val(data.yzm);
+			}
+	});
+	
+	var num=30;
+	document.getElementById("sendOut_btn").disabled=true;
+	$("#sendOut_btn").html(num+"秒后,重新发送");
+	timer=setInterval(function(){
+		num--;
+		$("#sendOut_btn").html(num+"秒后,重新发送");
+		if(num==0){
+			document.getElementById("sendOut_btn").disabled=false;
+			clearInterval(timer);
+			$("#sendOut_btn").html("发送验证码");
+		}
+	},1000);
 }
 

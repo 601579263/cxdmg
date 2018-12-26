@@ -142,31 +142,67 @@ public class LoginController {
 		}
 		return map;
 	}
+	
 	/**
 	 * 发送验证码
+	 * 短信正文id 255433 找回密码
+	 * 短信正文id 247134 注册验证码
 	 * @param phone
 	 * @return
 	 */
 	@RequestMapping("/sendOut")
 	@ResponseBody
-	public Map<String,Object>sendOut(String phone){
+	public Map<String,Object>sendOut(String phone,String templateId){
 		Map<String,Object>map=new HashMap<String,Object>();
 		String []phoneNumbers=new String[]{phone};
 		String verifyCode = String.valueOf(new Random().nextInt(899999) + 100000);//生成短信验证码
    	 	System.out.println("验证码是:"+verifyCode+",手机号是:"+phone);
 		String[] params= {verifyCode};
 		try {
-			String msg=SmsUtils.sendSms(params, phoneNumbers);
+			String msg=SmsUtils.sendSms(params, phoneNumbers,Integer.parseInt(templateId));
 			JSONObject jsonObject=JSONObject.parseObject(msg);
 			String result=jsonObject.getString("result");
-			if(result.equals("1024")){
-				map.put("code", "-1");
-				map.put("msg", "单个手机号 1 小时内下发短信条数超过设定的上限");
-		    }else if(result.equals("0")) {
+			 if(result.equals("0")) {
 		    	map.put("yzm", verifyCode);
 				map.put("code", "1");
+		    }else if(result.equals("1021")){
+		    	map.put("msg", "请求发起时间不正常，通常是由于您的服务器时间与腾讯云服务器时间差异超过 10 分钟导致的");
+				map.put("code", "-1");
+		    }else if(result.equals("1022")){
+		    	map.put("msg", "业务短信日下发条数超过设定的上限");
+				map.put("code", "-1");
+		    }else if(result.equals("1023")){
+		    	map.put("msg", "单个手机号 30 秒内下发短信条数超过设定的上限");
+				map.put("code", "-1");
+		    }else if(result.equals("1024")){
+				map.put("code", "-1");
+				map.put("msg", "单个手机号 1 小时内下发短信条数超过设定的上限");
+		    }else if(result.equals("1025")){
+		    	map.put("msg", "单个手机号日下发短信条数超过设定的上限");
+				map.put("code", "-1");
+		    }else if(result.equals("1026")){
+		    	map.put("msg", "单个手机号下发相同内容超过设定的上限");
+				map.put("code", "-1");
+		    }else if(result.equals("1029")){
+		    	map.put("msg", "营销短信发送时间限制");
+				map.put("code", "-1");
+		    }else if(result.equals("1030")){
+		    	map.put("msg", "不支持该请求");
+				map.put("code", "-1");
+		    }else if(result.equals("1031")){
+		    	map.put("msg", "套餐包余量不足");
+				map.put("code", "-1");
+		    }else if(result.equals("1032")){
+		    	map.put("msg", "个人用户没有发营销短信的权限");
+				map.put("code", "-1");
+		    }else if(result.equals("1033")){
+		    	map.put("msg", "欠费被停止服务");
+				map.put("code", "-1");
+		    }else if(result.equals("1034")){
+		    	map.put("msg", "群发请求里既有了国内也有国际手机号");
+				map.put("code", "-1");
 		    }else {
-		    	map.put("msg", "获取验证码失败,请换一个手机号试试");
+		    	map.put("msg", "获取验证码失败,请换一个手机号试试,code值为:"+result);
 				map.put("code", "-1");
 		    }
 		} catch (Exception e) {

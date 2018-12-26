@@ -5,22 +5,41 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.alibaba.druid.util.StringUtils;
+import com.alibaba.fastjson.JSONObject;
 import com.cxdmg.config.MD5Util;
 import com.cxdmg.dao.MbUserDao;
 import com.cxdmg.model.MbUser;
 import com.cxdmg.repository.MbUserRepository;
 import com.cxdmg.vo.MbUserVo;
 
+
 @Service
 public class MbUserService {
-
+	
+	@Value("${msg.subject}")
+	private String subject;//邮件名称
+	@Value("${msg.text}")
+	private String text;//内容
+	@Value("${spring.mail.username}")
+	private String username;//服务器邮箱账号
+	
 	@Autowired
 	private MbUserDao mbUserDao;
 	@Autowired
 	private MbUserRepository mbUserRepository;
+	@Autowired
+	private JavaMailSender javaMailSender;
+	
+	
+	
+	
 	/**
 	 * 获取所有用户信息
 	 * @return
@@ -76,6 +95,10 @@ public class MbUserService {
 		mb.setPassword(pwd);
 		mb.setPhone(mbUserVo.getPhone());
 		mbUserRepository.save(mb);
+		//注册成功后发送邮件
+		if(!StringUtils.isEmpty(mb.getId())) {
+			sendMsg(mbUserVo.getEmail(),mb.getEmpId());
+		}
 	}
 	/**
 	 * 修改密码
@@ -88,5 +111,27 @@ public class MbUserService {
 		MbUser mb=mbUserRepository.findOne(id);
 		mb.setPassword(pwd);
 		mbUserRepository.save(mb);
+	}
+	
+	
+	/**
+	 * 发送邮件
+	 * @param emailId
+	 */
+	public void sendMsg(String emailId,String empId) {
+		//处理发送邮件
+		System.out.println("消息服务平台发送邮件{}开始:"+emailId);
+		SimpleMailMessage simpleMailMessage=new SimpleMailMessage();
+		//发件人
+		simpleMailMessage.setFrom(username);
+		//接收邮件账号
+		simpleMailMessage.setTo(emailId);
+		//邮件标题
+		simpleMailMessage.setSubject(subject);
+		//邮件内容
+		simpleMailMessage.setText(text.replace("{}", empId));
+		//发送邮件
+		javaMailSender.send(simpleMailMessage);
+		System.out.println("消息服务平台发送邮件{}完成:"+emailId);
 	}
 }
