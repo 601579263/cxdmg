@@ -19,7 +19,7 @@ spring:
   #数据库连接信息
   datasource:
         name: test
-        url: jdbc:mysql://47.105.71.96:3306/member?useUnicode=true&characterEncoding=utf-8
+        url: jdbc:mysql://47.105.71.96:3306/member?useUnicode=true&characterEncoding=utf-8&useSSL=false
         username: root
         password: 123456Llx!
         # 使用druid数据源
@@ -53,6 +53,7 @@ spring:
         
   mail:
     host: smtp.qq.com
+    port: 587
     username: 601579263@qq.com
     password: bpedkpauhuhwbbgj
     enable:  true
