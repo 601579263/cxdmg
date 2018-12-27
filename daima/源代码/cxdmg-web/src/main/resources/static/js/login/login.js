@@ -1,3 +1,73 @@
+$(function(){
+	
+	 //调用QC.Login方法，指定btnId参数将按钮绑定在容器节点中
+	   QC.Login({
+	       //btnId：插入按钮的节点id，必选
+	       btnId:"qqLoginBtn",	
+	       //用户需要确认的scope授权项，可选，默认all
+	       scope:"all",
+	       //按钮尺寸，可用值[A_XL| A_L| A_M| A_S|  B_M| B_S| C_S]，可选，默认B_S
+	       size: "A_XL"
+	   }, function(reqData, opts){//登录成功
+	       //根据返回数据，更换按钮显示状态方法
+	       var dom = document.getElementById(opts['btnId']),
+	       _logoutTemplate=[
+	            //头像
+	            '<span><img src="{figureurl}" class="{size_key}"/></span>',
+	            //昵称
+	            '<span>{nickname}</span>',
+	            //退出
+	            '<span><a href="javascript:QC.Login.signOut();">退出</a></span>'	
+	                     ].join("");
+	       dom && (dom.innerHTML = QC.String.format(_logoutTemplate, {
+	           nickname : QC.String.escHTML(reqData.nickname),
+	           figureurl : reqData.figureurl
+	              }));
+	   },function(opts){//注销成功
+		  alert('QQ登录 注销成功');
+		window.location.reload();
+	  }
+	);
+	   
+   var paras = {};
+	QC.api("get_user_info", paras)
+		.success(function(s){//成功回调
+			//隐藏qq登陆按钮
+			$("#qqLoginBtn").hide();
+				QC.Login.getMe(function(openId, accessToken){
+					console.log("当前登录用户的", "openId为："+openId, "accessToken为："+accessToken);
+					//绑定qq
+					var url=ctx+"/qqLoginCallback";
+					$.ajax({
+						url:url,
+						type:'post',
+						dataType:'json',
+						data:{				
+							openId:openId,
+							name:s.data.nickname,
+							figureurl:s.data.figureurl_1
+						},
+						success:function(data){
+							if(data.code=="-1"){
+								alert(data.msg);
+								return;
+							}
+							//跳到其他页
+							window.location.href=ctx+"/user/getUserList?name="+s.data.nickname+"&figureurl="+s.data.figureurl_1;
+						}
+					});
+				})
+		})
+		.error(function(f){//失败回调
+			console.log("获取用户信息失败！");
+		})
+		.complete(function(c){//完成请求回调
+			console.log("获取用户信息完成！");
+		});   
+	
+});
+
+
 //登陆
 function toLogin(){
 	var pwd=$("#pwd").val();
@@ -25,7 +95,7 @@ function toLogin(){
 					return;
 				}
 				//跳到首页
-				window.location.href=ctx+"/user/getUserList";
+				window.location.href=ctx+"/user/getUserList?name="+empId;
 			}
 		});
 }
@@ -97,7 +167,7 @@ function register(){
 					return;
 				}
 				//跳到首页
-				window.location.href=ctx+"/user/getUserList";
+				window.location.href=ctx+"/user/getUserList?name="+name;
 			}
 		});
 }

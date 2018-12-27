@@ -3,6 +3,7 @@ package com.cxdmg.service;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.alibaba.druid.util.StringUtils;
 import com.alibaba.fastjson.JSONObject;
 import com.cxdmg.config.MD5Util;
+import com.cxdmg.config.StringUtil;
 import com.cxdmg.dao.MbUserDao;
 import com.cxdmg.model.MbUser;
 import com.cxdmg.repository.MbUserRepository;
@@ -134,4 +136,39 @@ public class MbUserService {
 		javaMailSender.send(simpleMailMessage);
 		System.out.println("消息服务平台发送邮件{}完成:"+emailId);
 	}
+	
+	
+	/**
+	 * 获取openId是否存在
+	 * @param empId
+	 * @return
+	 */
+	@Transactional(readOnly=true)
+	public List<Map<String,Object>>findByUserOpenId(String openId){
+		return mbUserDao.findByUserOpenId(openId);
+	}
+	
+	/**
+	 * 随机添加一条用户信息
+	 * @param openId
+	 */
+	@Transactional
+	public void saveUserOpenId(String openId,String name) {
+		//随机生成账号
+		String empId=StringUtil.getStringRandom(10);
+		//密码默认123456
+		String pwd="123456";
+		pwd=MD5Util.MD5(pwd);
+		MbUser mb=new MbUser();
+		mb.setCreateTime(new Date());
+		mb.setEmpId(empId);
+		mb.setName(name);
+		mb.setPassword(pwd);
+		mb.setOpenId(openId);
+		mbUserRepository.save(mb);
+	}
+	
+	
+	
+	
 }

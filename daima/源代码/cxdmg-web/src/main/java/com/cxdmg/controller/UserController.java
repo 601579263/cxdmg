@@ -27,9 +27,11 @@ public class UserController {
 	 * @return
 	 */
 	@RequestMapping("/getUserList")
-	public String getUserList(Model model) {
+	public String getUserList(Model model,String name,String figureurl) {
 		List<Map<String,Object>>list=mbUserService.getUserList();
 		model.addAttribute("list", list);
+		model.addAttribute("name", name);
+		model.addAttribute("figureurl", figureurl);
 		return "user/userList";
 	}
 }

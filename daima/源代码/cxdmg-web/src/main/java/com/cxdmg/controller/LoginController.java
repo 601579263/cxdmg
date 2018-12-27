@@ -211,4 +211,47 @@ public class LoginController {
 		}
 		return map;
 	}
+	
+	
+	
+	/**
+	 * 获取qq登陆后的回调信息
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping("/qqLoginCallback")
+	@ResponseBody
+	public Map<String,Object> qqLoginCallback(String openId,String name,String figureurl) {
+		Map<String,Object>map=new HashMap<String,Object>();
+		//判断openId是否存在
+		List<Map<String,Object>>openList=mbUserService.findByUserOpenId(openId);
+		if(openList.size()==0) {
+			//添加一条记录
+			try {
+				//随机添加一条用户信息
+				mbUserService.saveUserOpenId(openId,name);
+			} catch (Exception e) {
+				map.put("code","-1");
+				map.put("msg","添加用户异常");
+				return map;
+			}
+		}
+		map.put("code",1);
+		return map;
+	}
+	
+	
+	/**
+	 * 用户注销
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value="/logout")
+	public String logout(HttpServletRequest request,Model model){
+		HttpSession session = request.getSession();//获取当前session
+		if(session!=null){
+			session.invalidate();//关闭session
+		}
+		return "login1";
+	}
 }

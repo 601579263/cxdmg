@@ -69,4 +69,18 @@ public class MbUserDao {
 		list=jdbcTemplate.queryForList(sql.toString());
 		return list;
 	}
+	
+	/**
+	 * 查询openId是否存在
+	 * @param phone
+	 * @return
+	 */
+	public List<Map<String,Object>>findByUserOpenId(String openId){
+		StringBuilder sql=new StringBuilder();
+		List<Map<String,Object>> list=null;
+		sql.append(" SELECT * from mb_user  ");
+		sql.append(" WHERE open_id='").append(openId).append("'");
+		list=jdbcTemplate.queryForList(sql.toString());
+		return list;
+	}
 }

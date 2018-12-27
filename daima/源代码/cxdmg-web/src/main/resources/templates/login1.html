@@ -4,11 +4,14 @@
     <meta charset="UTF-8">
     <title>登陆</title>
     <link rel="stylesheet" type="text/css" th:href="@{css/style.css}"/>
+    <script type="text/javascript" th:src="@{js/vendors/jquery-3.2.1.min.js}"></script>
    	<script type="text/javascript" th:src="@{js/login/login.js}"></script>
-   	<script type="text/javascript" th:src="@{js/vendors/jquery-3.2.1.min.js}"></script>
+   	
+    <script type="text/javascript" src="http://qzonestyle.gtimg.cn/qzone/openapi/qc_loader.js" data-appid="101486322"  charset="utf-8"></script>
     <script type="text/javascript" th:inline="javascript">
     	var ctx=/*[[${#httpServletRequest.getContextPath()}]]*/ '';
     </script>	
+	
 </head>
 <body>
 <!--背景3-->
@@ -39,6 +42,7 @@
                 <div class="a">
                     <button type="button" onclick="toLogin()">登录</button>
                 </div>
+                <span id="qqLoginBtn"></span>
                 <div class="a">
                     <div class="hr"></div>
                 </div>
