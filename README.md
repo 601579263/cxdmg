@@ -1,7 +1,7 @@
 # cxdmg
 这是一个阿里云的demo;
 
-在线访问地址：www.cxdmg.top;
+在线访问地址：http://www.cxdmg.top/cxdmg-web/login;
 
 1.联合qq登陆;
 
