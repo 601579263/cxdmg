@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+<meta charset="UTF-8"></meta>
+<title>欢迎</title>
+	<link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">  
+	<script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+	<script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="http://qzonestyle.gtimg.cn/qzone/openapi/qc_loader.js" data-appid="101486322"  charset="utf-8"></script>
+	<script type="text/javascript" th:src="@{/js/user/userList.js}"></script>
+   	<script type="text/javascript" th:inline="javascript">
+    	var ctx=/*[[${#httpServletRequest.getContextPath()}]]*/ '';
+    </script>
+    <script type="text/javascript">
+    	//跳到用户界面
+		function toUserList(){
+			 window.location.href=ctx+"/user/getUserList";
+		}
+		//跳到角色界面
+		function toRoleList(){
+			 window.location.href=ctx+"/role/getRoleList";
+		}
+		//跳到权限界面
+		function toPermissionList(){
+			 window.location.href=ctx+"/permission/getPermissionList";
+		}
+	</script>	
+</head>
+
+<body>
+<div>
+	<div>
+		<img th:src="@{images/brand/index2.jpg}" style="height: 120px;width: 100%;">	
+	</div>
+	<div style="margin-top:-5%;">
+		<!-- qq登陆按钮 -->
+		 <span id="qqLoginBtn" style="display: none;"></span>
+		 <!-- 显示qq信息 -->
+		 <div class="demo_left">
+			<span id="OO" _origtext="get_user_info 加载昵称中..." title="nickname">
+				<span class="qc_item figure">
+					<img th:if="${figureurl}!=null" th:src="${figureurl}" class="undefined">
+					<img th:if="${figureurl}==null" th:src="@{/images/brand/touxiang.jpeg}" style="width: 50px;height: 50px;"/>
+				</span>
+				<span class="qc_item nickname" style="margin-left:6px;color: white;" th:text="${name}" ></span>
+				<span class="qc_item logout">
+					<a href="javascript:QC.Login.signOut();" style="margin-left:6px;color: appworkspace;">退出</a>
+				</span>
+			</span>
+		</div>
+	</div>
+</div>
+
+<hr/>	
+<div>
+	<button type="button" class="btn btn-default" onclick="toUserList()">用户信息</button>
+	<button type="button" class="btn btn-default" onclick="toRoleList()">角色信息</button>
+	<button type="button" class="btn btn-default" onclick="toPermissionList()">权限信息</button>
+	<button type="button" class="btn btn-default" onclick="toUserList()">设置权限</button>
+	<a th:href="@{/user/getUserList}">aa</a>
+</div> 
+
+<hr/>
+<div>
+	<img th:src="@{images/brand/index1.jpg}" style="width: 100%;">
+</div>
+</body>
+
+</html>
