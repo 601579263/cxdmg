@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>设置角色权限</title>
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">  
+	<script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+	<script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+   	<script type="text/javascript" th:src="@{/js/permission/setUpPermission.js}"></script>
+   	<script type="text/javascript" th:inline="javascript">
+    	var ctx=/*[[${#httpServletRequest.getContextPath()}]]*/ '';
+    </script>
+   
+</head>
+<body>
+	
+
+	<h1>设置角色权限信息</h1>
+	<input type="hidden" id="roleId" th:value="${roleId}"/>
+	<button type="button" class="btn btn-default" onclick="savePerm()">设置</button>
+	<div class="checkbox">
+		
+	 	<th:block th:each="r,stat:${perList}" th:if="${perList}!=null">
+			<label>
+				<input type="checkbox" th:value="${r.id}" th:text="${r.perm_name}" th:if="${r.num==1}" checked="checked">
+				<input type="checkbox" th:value="${r.id}" th:text="${r.perm_name}" th:if="${r.num==0}">
+			</label>
+		</th:block>
+	</div>
+	
+	
+</body>
+</html>

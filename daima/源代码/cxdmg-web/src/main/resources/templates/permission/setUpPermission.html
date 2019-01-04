@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>设置权限信息列表</title>
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">  
+	<script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+	<script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+   	<script type="text/javascript" th:src="@{/js/permission/setUpPermission.js}"></script>
+   	<script type="text/javascript" th:inline="javascript">
+    	var ctx=/*[[${#httpServletRequest.getContextPath()}]]*/ '';
+    </script>
+   
+</head>
+<body>
+	
+
+	<h1>设置权限信息</h1>
+	<h2>提示:perm_tag对应security角色,url对应security路径,对应后台方法的路径。url正确 才能设置权限,限制无权限访问。</h2>
+	<div>
+		<table class="table" style="margin-top: 10px;float:left;width: 50%;">
+			<tr>
+				<td>序号</td>
+				<td>角色英文</td>
+				<td>角色中文</td>
+				<td style="padding-left: 11.5%;">操作</td>
+			</tr>	
+	   
+	       <th:block th:each="r,stat:${list}" th:if="${list}!=null">
+	        <tr>
+	        	<td th:text="${stat.index+1}"></td>	
+	        	<td th:text="${r.role_name}"></td>
+	        	<td th:text="${r.role_desc}"></td>
+	        	<td>
+	        		<button type="button" class="btn btn-default"   th:onclick="|toPermissionList('${r.id}')|">权限信息</button>
+	       			<button type="button" class="btn btn-default" th:onclick="|toSettingRolePermissions('${r.id}')|">设置角色权限</button>
+	        	</td>
+	        </tr>
+	    </th:block>
+		</table>
+		<span style="border:3px solid red;float:left;height:600px;margin-top: 10px;"></span>
+		<table class="table" style="margin-top: 10px;float:left;width: 49%;">
+			<tr>
+				<td>序号</td>
+				<td>权限类型</td>
+				<td>权限名称</td>
+			</tr>
+			<tbody id="per_tbody">	
+			   <th:block th:each="p,stat:${perList}" th:if="${perList}!=null">
+			        <tr>
+			        	<td th:text="${stat.index+1}"></td>	
+			        	<td th:text="${p.perm_tag}"></td>
+			        	<td th:text="${p.perm_name}"></td>
+			        </tr>
+			    </th:block>
+		    </tbody>	
+		</table>
+	</div>
+	
+</body>
+</html>
