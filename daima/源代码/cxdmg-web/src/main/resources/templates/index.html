@@ -24,6 +24,10 @@
 		function toPermissionList(){
 			 window.location.href=ctx+"/permission/getPermissionList";
 		}
+		//跳到设置权限界面
+		function toSetUpPermission(){
+			window.location.href=ctx+"/permission/setUpPermission";
+		}
 	</script>	
 </head>
 
@@ -56,8 +60,8 @@
 	<button type="button" class="btn btn-default" onclick="toUserList()">用户信息</button>
 	<button type="button" class="btn btn-default" onclick="toRoleList()">角色信息</button>
 	<button type="button" class="btn btn-default" onclick="toPermissionList()">权限信息</button>
-	<button type="button" class="btn btn-default" onclick="toUserList()">设置权限</button>
-	<a th:href="@{/user/getUserList}">aa</a>
+	<button type="button" class="btn btn-default" onclick="toSetUpPermission()">设置权限</button>
+	
 </div> 
 
 <hr/>
