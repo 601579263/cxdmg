@@ -1,7 +1,7 @@
 # cxdmg
 这是一个阿里云的demo;
 
-在线访问地址：http://www.cxdmg.top/cxdmg-web/login;
+在线访问地址：http://www.cxdmg.top/cxdmg-web;
 
 1.联合qq登陆;
 
@@ -18,3 +18,5 @@
 7.发送qq邮件,163邮件;
 
 8.nginx反向代理,负载均衡
+
+9.springSecurity安全框架
