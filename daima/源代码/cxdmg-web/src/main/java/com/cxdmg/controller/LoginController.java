@@ -1,18 +1,27 @@
 package com.cxdmg.controller;
 
 
+import java.security.Principal;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import javax.security.auth.Subject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -42,6 +51,11 @@ public class LoginController {
 	@Autowired
 	private MbUserService mbUserService;
 	
+	/**
+	 * 认证处理
+	 */
+	@Autowired
+    private AuthenticationManager myAuthenticationManager;
 	/**
 	 * 跳到登陆界面
 	 * @return
@@ -240,13 +254,34 @@ public class LoginController {
 		if(openList.size()==0) {
 			//添加一条记录
 			try {
+				//随机生成账号
+				String empId=StringUtil.getStringRandom(10);
 				//随机添加一条用户信息
-				mbUserService.saveUserOpenId(openId,name);
+				mbUserService.saveUserOpenId(openId,name,empId);
+				//重新调用用户登陆方法
+				UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(empId, "123456");
+				try {
+		            Authentication authentication1 = myAuthenticationManager.authenticate(authRequest); //调用loadUserByUsername
+		            SecurityContextHolder.getContext().setAuthentication(authentication1);
+		            System.out.println(SecurityContextHolder.getContext());
+		        } catch (AuthenticationException ex) {
+		            System.out.println("用户名或密码错误");
+		        }
 			} catch (Exception e) {
 				map.put("code","-1");
 				map.put("msg","添加用户异常");
 				return map;
 			}
+		}else {
+			//重新调用用户登陆方法
+			UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(openList.get(0).get("username"), "123456");
+			try {
+	            Authentication authentication1 = myAuthenticationManager.authenticate(authRequest); //调用loadUserByUsername
+	            SecurityContextHolder.getContext().setAuthentication(authentication1);
+	            System.out.println(SecurityContextHolder.getContext());
+	        } catch (AuthenticationException ex) {
+	            System.out.println("用户名或密码错误");
+	        }
 		}
 		map.put("code",1);
 		return map;
@@ -272,9 +307,26 @@ public class LoginController {
 	 * 登陆后跳到首页
 	 * @param model
 	 * @return
+	 * @throws IllegalAccessException 
+	 * @throws InstantiationException 
 	 */
 	@RequestMapping("/index")
-	public String toIndex(Model model,String name,String figureurl) {
+	public String toIndex(Model model,String name,String figureurl,String isQq) throws InstantiationException, IllegalAccessException {
+		System.out.println("进来首页方法");
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		String currentPrincipalName = authentication.getName();
+		if("anonymousUser".equals(currentPrincipalName)) {
+			//匿名用户 0是 1不是
+			if(!"0".equals(isQq)) {
+				//不是qq,跳到登陆界面
+				return "login1";
+			}
+		}else {
+			//普通登陆
+			MbUserVo mbUserVo=(MbUserVo) authentication.getPrincipal();
+			name=mbUserVo.getName();
+		}
+		System.out.println("登陆用户为:"+currentPrincipalName);
 		model.addAttribute("name", name);
 		model.addAttribute("figureurl", figureurl);
 		return "index";

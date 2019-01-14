@@ -32,6 +32,7 @@ public class MyUserDetailsService implements UserDetailsService{
 		vo.setPassword(list.get(0).get("password").toString());
 		vo.setId(list.get(0).get("id").toString());
 		vo.setUsername(list.get(0).get("username").toString());
+		vo.setName(list.get(0).get("name").toString());
 		String accountNonExpired=list.get(0).get("accountNonExpired").toString();
 		if(accountNonExpired.equals("1")) {
 			vo.setAccountNonExpired(true);

@@ -7,16 +7,28 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.ExpressionUrlAuthorizationConfigurer;
+import org.springframework.security.config.annotation.web.configurers.ExpressionUrlAuthorizationConfigurer.ExpressionInterceptUrlRegistry;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,8 +36,11 @@ import com.alibaba.druid.util.StringUtils;
 import com.alibaba.fastjson.JSONObject;
 
 import com.cxdmg.dao.MbUserDao;
+import com.cxdmg.dao.PermissionDao;
 import com.cxdmg.model.MbUser;
+import com.cxdmg.model.UserRole;
 import com.cxdmg.repository.MbUserRepository;
+import com.cxdmg.repository.UserRoleRepository;
 import com.cxdmg.util.MD5Util;
 import com.cxdmg.util.StringUtil;
 import com.cxdmg.vo.MbUserVo;
@@ -41,14 +56,19 @@ public class MbUserService {
 	@Value("${spring.mail.username}")
 	private String username;//服务器邮箱账号
 	
+	
 	@Autowired
 	private MbUserDao mbUserDao;
 	@Autowired
 	private MbUserRepository mbUserRepository;
 	@Autowired
 	private JavaMailSender javaMailSender;
+	@Autowired
+	private UserRoleRepository userRoleRepository;
+	@Autowired
+	private PermissionDao permissionDao; 
 	
-	
+	   
 	
 	
 	/**
@@ -165,11 +185,10 @@ public class MbUserService {
 	/**
 	 * 随机添加一条用户信息
 	 * @param openId
+	 * @throws Exception 
 	 */
 	@Transactional
-	public void saveUserOpenId(String openId,String name) {
-		//随机生成账号
-		String empId=StringUtil.getStringRandom(10);
+	public void saveUserOpenId(String openId,String name,String empId) throws Exception {
 		//密码默认123456
 		String pwd="123456";
 		pwd=MD5Util.encode(pwd);
@@ -185,6 +204,11 @@ public class MbUserService {
 		mb.setEnabled(true);
 		mb.setCredentialsNonExpired(true);
 		mbUserRepository.save(mb);
+		/*//给用户设置普通角色
+		UserRole userRole=new UserRole();
+		userRole.setRoleId("8a9f01d5683abd2e01683ac1d8c00000");
+		userRole.setUserId(mb.getId());
+		userRoleRepository.save(userRole);*/
 	}
 
 	

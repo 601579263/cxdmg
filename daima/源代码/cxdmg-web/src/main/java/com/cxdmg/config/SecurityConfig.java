@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
@@ -95,6 +96,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 		.antMatchers("/sendOut").permitAll()
 		.antMatchers("/updateNewPwd").permitAll()
 		.antMatchers("/register").permitAll()
+		//qq登陆
+		.antMatchers("/qqLoginCallback").permitAll()
+		//.antMatchers("/index").permitAll()
+		//.antMatchers("/index").permitAll()
 		//完全认证的 拦截所有请求, formLogin以表单形式进行认证
 		.antMatchers("/**").fullyAuthenticated().and().formLogin()
 		//自定义登录页url,默认为/login,跳到后台/login方法
@@ -116,5 +121,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 	@Bean
 	public static NoOpPasswordEncoder passwordEncoder() {
 		return (NoOpPasswordEncoder) NoOpPasswordEncoder.getInstance();
+	}
+	
+	/**
+	 * 防止authenticationManager 无法注入
+	 */
+	@Bean
+	@Override
+	public AuthenticationManager authenticationManagerBean() throws Exception {
+		// TODO Auto-generated method stub
+		return super.authenticationManagerBean();
 	}
 }

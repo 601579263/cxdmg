@@ -52,8 +52,9 @@ $(function(){
 								alert(data.msg);
 								return;
 							}
+							//alert(data.code);
 							//跳到其他页
-							window.location.href=ctx+"/index?name="+s.data.nickname+"&figureurl="+s.data.figureurl_1;
+							window.location.href=ctx+"/index?name="+s.data.nickname+"&figureurl="+s.data.figureurl_1+"&isQq=0";
 						}
 					});
 				})
