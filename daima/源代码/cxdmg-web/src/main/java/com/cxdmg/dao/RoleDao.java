@@ -40,4 +40,26 @@ public class RoleDao {
 		return list;
 	}
 	
+	
+	/**
+	 * 根据roleId删除角色用户关联信息
+	 * @param roleId
+	 */
+	public void deleteUserByRoleId(String roleId) {
+		StringBuilder sql=new StringBuilder();
+		sql.append(" DELETE from sys_user_role WHERE role_id='").append(roleId).append("'");
+		jdbcTemplate.execute(sql.toString());
+	}
+	
+	/**
+	 * 增加角色用户
+	 * @param perId
+	 * @param roleId
+	 */
+	public void saveRoleUser(String userId,String roleId) {
+		StringBuilder sql=new StringBuilder();
+		sql.append(" insert into sys_user_role (role_id, user_id) values ('").append(roleId).append("','").append(userId).append("')");
+		jdbcTemplate.execute(sql.toString());
+	}
+	
 }

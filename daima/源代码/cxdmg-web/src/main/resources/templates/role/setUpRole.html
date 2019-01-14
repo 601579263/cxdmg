@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>设置用户角色信息列表</title>
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">  
+	<script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+	<script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+   	<script type="text/javascript" th:src="@{/js/role/setUpRole.js}"></script>
+   	<script type="text/javascript" th:inline="javascript">
+    	var ctx=/*[[${#httpServletRequest.getContextPath()}]]*/ '';
+    </script>
+   
+</head>
+<body>
+	
+
+	<h1>设置用户角色信息</h1>
+	
+	<div>
+		<table class="table" style="margin-top: 10px;float:left;width: 50%;">
+			<tr>
+				<td>序号</td>
+				<td>角色英文</td>
+				<td>角色中文</td>
+				<td style="padding-left: 11.5%;">操作</td>
+			</tr>	
+	   
+	       <th:block th:each="r,stat:${list}" th:if="${list}!=null">
+	        <tr>
+	        	<td th:text="${stat.index+1}"></td>	
+	        	<td th:text="${r.role_name}"></td>
+	        	<td th:text="${r.role_desc}"></td>
+	        	<td>
+	        		<button type="button" class="btn btn-default"   th:onclick="|toUserList('${r.id}')|">用户信息</button>
+	       			<button type="button" class="btn btn-default" th:onclick="|toSettingRoleUser('${r.id}')|">设置用户角色</button>
+	        	</td>
+	        </tr>
+	    </th:block>
+		</table>
+		<span style="border:3px solid red;float:left;height:600px;margin-top: 10px;"></span>
+		<table class="table" style="margin-top: 10px;float:left;width: 49%;">
+			<tr>
+				<td>序号</td>
+				<td>用户账号</td>
+				<td>用户姓名</td>
+			</tr>
+			<tbody id="per_tbody">	
+			   <th:block th:each="p,stat:${userList}" th:if="${userList}!=null">
+			        <tr>
+			        	<td th:text="${stat.index+1}"></td>	
+			        	<td th:text="${p.username}"></td>
+			        	<td th:text="${p.name}"></td>
+			        </tr>
+			    </th:block>
+		    </tbody>	
+		</table>
+	</div>
+	
+</body>
+</html>

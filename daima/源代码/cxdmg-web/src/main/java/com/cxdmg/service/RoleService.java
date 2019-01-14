@@ -48,4 +48,17 @@ public class RoleService {
 		role.setRole_name(roleName);
 		roleRepository.save(role);
 	}
+	/**
+	 * 增加角色用户
+	 */
+	@Transactional
+	public void saveRoleUser(String userId,String roleId) {
+		String []id=userId.split(",");
+		//删除角色用户信息
+		roleDao.deleteUserByRoleId(roleId);
+		for (int i = 0; i < id.length; i++) {
+			//增加角色用户
+			roleDao.saveRoleUser(id[i], roleId);
+		}
+	}
 }

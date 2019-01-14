@@ -204,14 +204,26 @@ public class MbUserService {
 		mb.setEnabled(true);
 		mb.setCredentialsNonExpired(true);
 		mbUserRepository.save(mb);
-		/*//给用户设置普通角色
-		UserRole userRole=new UserRole();
-		userRole.setRoleId("8a9f01d5683abd2e01683ac1d8c00000");
-		userRole.setUserId(mb.getId());
-		userRoleRepository.save(userRole);*/
+	}
+	
+	/**
+	 * 根据角色ID获取用户信息
+	 * @param roleId
+	 * @return
+	 */
+	@Transactional(readOnly=true)
+	public List<Map<String,Object>>getUserListByRoleId(String roleId){
+		return mbUserDao.getUserListByRoleId(roleId);
 	}
 
-	
+	/**
+	 *  根据角色id获取所有用户对应信息
+	 * @return
+	 */
+	@Transactional(readOnly=true)
+	public List<Map<String,Object>>getDoYouHaveUser(String roleId){
+		return mbUserDao.getDoYouHaveUser(roleId);
+	}
 	
 	
 	

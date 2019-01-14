@@ -102,4 +102,41 @@ public class MbUserDao {
 		list=jdbcTemplate.queryForList(sql.toString());
 		return list;
 	}
+	
+	/**
+	 * 根据角色ID获取用户信息
+	 * @param roleId
+	 * @return
+	 */
+	public List<Map<String,Object>>getUserListByRoleId(String roleId){
+		StringBuilder sql=new StringBuilder();
+		sql.append(" SELECT mu.`name`,mu.username from ");
+		sql.append(" sys_user_role as sr ");
+		sql.append(" LEFT JOIN mb_user as mu on sr.user_id=mu.id ");
+		sql.append(" WHERE sr.role_id='").append(roleId).append("'");
+		List<Map<String,Object>> list=null;
+		list=jdbcTemplate.queryForList(sql.toString());
+		return list;
+	}
+	
+	
+	/**
+	 * 根据角色id获取所有用户对应信息
+	 * @param roleId
+	 * @return
+	 */
+	public List<Map<String,Object>>getDoYouHaveUser(String roleId){
+		StringBuilder sql=new StringBuilder();
+		sql.append(" SELECT mbu.id,mbu.name, ");
+		sql.append(" (SELECT count(1) from ");
+		sql.append(" sys_user_role as sr ");
+		sql.append(" LEFT JOIN mb_user as mu on sr.user_id=mu.id ");
+		sql.append(" WHERE sr.role_id='").append(roleId).append("'");
+		sql.append(" AND mu.id=mbu.id )num ");
+		sql.append(" FROM mb_user as mbu ");
+		List<Map<String,Object>> list=null;
+		list=jdbcTemplate.queryForList(sql.toString());
+		return list;
+	}
+	
 }
