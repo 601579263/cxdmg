@@ -31,5 +31,6 @@
 1.1 版本
   qq登陆是js qq的sdk是2012年的,如果你用qq浏览器登陆的话,可能第一次不显示,需要qq登陆后在刷新界面才显示,建议使用谷歌浏览器;
   本次版本新增springSecurity安全框架;
+  
 1.2 版本
   本次新增jwt+oauth+sso+springSecurity的整合
