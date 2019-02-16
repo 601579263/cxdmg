@@ -4,16 +4,27 @@ server:
     session:
       cookie:
         name: UISESSIONORDER
-
+#### 本地环境
+#security:
+#  oauth2:
+#    client:
+#      client-id: orderId
+#      client-secret: 1
+#      access-token-uri: http://localhost:8080/cxdmg-web/oauth/token
+#      user-authorization-uri: http://localhost:8080/cxdmg-web/oauth/authorize
+#    resource:
+#      user-info-uri: http://localhost:8081/user/getUserInfo
+###生产环境        
 security:
   oauth2:
     client:
-      client-id: orderId
+      client-id: orderIdProd
       client-secret: 1
-      access-token-uri: http://localhost:8080/cxdmg-web/oauth/token
-      user-authorization-uri: http://localhost:8080/cxdmg-web/oauth/authorize
+      access-token-uri: http://www.cxdmg.top/cxdmg-web/oauth/token
+      user-authorization-uri: http://www.cxdmg.top/cxdmg-web/oauth/authorize
     resource:
-      user-info-uri: http://localhost:8081/user/getUserInfo
+      user-info-uri: http://47.105.71.96:8081/user/getUserInfo      
+      
 logging:
   level:
     root: debug
