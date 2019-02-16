@@ -1,6 +1,7 @@
 package com.cxdmg.controller;
 
 
+import java.io.IOException;
 import java.security.Principal;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -22,6 +23,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -337,5 +339,18 @@ public class LoginController {
 	public String error() {
 		return "/error/403";
 	}
+	
+	
+	@RequestMapping("/exit")
+    public void exit(HttpServletRequest request, HttpServletResponse response) {
+        // 如果需要，可以在此处撤消令牌
+        new SecurityContextLogoutHandler().logout(request, null, null);
+        try {
+            //发送回客户端应用程序
+            response.sendRedirect(request.getHeader("referer"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
 }

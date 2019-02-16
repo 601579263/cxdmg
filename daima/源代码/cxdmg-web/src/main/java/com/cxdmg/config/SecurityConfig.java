@@ -105,6 +105,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 		//自定义登录页url,默认为/login,跳到后台/login方法
 		 // 关闭csrf保护功能（跨域访问,出现403错误并且提示信息为“Could not verify the provided CSRF token because your session was not found in spring security
 		.loginPage("/login").successHandler(successHandler).and().csrf().disable();
+		 http
+         .logout()
+         .logoutUrl("/logout").permitAll()//自定义退出的地址
+         //.logoutSuccessUrl("/login")//退出之后跳转到注册页面
+         .logoutSuccessUrl("/exit").permitAll()
+         .deleteCookies("UISESSIONORDER").permitAll()//删除当前的JSESSIONID
+         .invalidateHttpSession(true)//默认为true,用户在退出后Http session失效
+         .and();
 	}
 	/**
 	 * 不拦截静态资源的访问
