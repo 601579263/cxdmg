@@ -4,20 +4,34 @@ server:
 logging:
   level:
     org.springframework.security: DEBUG
-
+### 本地环境
+#security:
+#  oauth2:
+#    resource:
+#      ####从认证授权中心上验证token
+#      tokenInfoUri: http://127.0.0.1:8080/cxdmg-web/oauth/check_token
+#      preferTokenInfo: true
+#    client:
+#      accessTokenUri: http://127.0.0.1:8080/cxdmg-web/oauth/token
+#      userAuthorizationUri: http://127.0.0.1:8080/cxdmg-web/oauth/authorize
+#      ###appid
+#      clientId: clientId4
+#      ###appSecret
+#      clientSecret: 1
+####生产环境     
 security:
   oauth2:
     resource:
       ####从认证授权中心上验证token
-      tokenInfoUri: http://127.0.0.1:8080/cxdmg-web/oauth/check_token
+      tokenInfoUri: http://www.cxdmg.top/cxdmg-web/oauth/check_token
       preferTokenInfo: true
     client:
-      accessTokenUri: http://127.0.0.1:8080/cxdmg-web/oauth/token
-      userAuthorizationUri: http://127.0.0.1:8080/cxdmg-web/oauth/authorize
+      accessTokenUri: http://www.cxdmg.top/cxdmg-web/oauth/token
+      userAuthorizationUri: http://www.cxdmg.top/cxdmg-web/oauth/authorize
       ###appid
       clientId: clientId4
       ###appSecret
-      clientSecret: 1
+      clientSecret: 1      
       
 #thymelea模板配置
 spring:
