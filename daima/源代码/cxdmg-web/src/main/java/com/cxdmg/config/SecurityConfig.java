@@ -3,7 +3,10 @@ package com.cxdmg.config;
 import java.util.List;
 import java.util.Map;
 
+import javax.sql.DataSource;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -16,6 +19,8 @@ import org.springframework.security.config.annotation.web.configurers.Expression
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.stereotype.Component;
 /**
  * Security配置
@@ -47,7 +52,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 	@Autowired
 	private PermissionService permissionService;
 	
-	
+	@Autowired
+	private DataSource dataSource;
 	
 	/**
 	 * 配置认证用户信息和权限
@@ -101,18 +107,34 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 		//.antMatchers("/index").permitAll()
 		//.antMatchers("/index").permitAll()
 		//完全认证的 拦截所有请求, formLogin以表单形式进行认证
-		.antMatchers("/**").fullyAuthenticated().and().formLogin()
+		//.antMatchers("/**").fullyAuthenticated().and().formLogin()
+		//需要认证才能访问
+		.anyRequest().authenticated().and().formLogin()
 		//自定义登录页url,默认为/login,跳到后台/login方法
 		 // 关闭csrf保护功能（跨域访问,出现403错误并且提示信息为“Could not verify the provided CSRF token because your session was not found in spring security
-		.loginPage("/login").successHandler(successHandler).and().csrf().disable();
-		 http
+		.loginPage("/login").successHandler(successHandler)
+		.and()
+	    .rememberMe()
+	    .tokenRepository(persistentTokenRepository())
+	    // 失效时间
+	    .tokenValiditySeconds(3600)
+	    .userDetailsService(myUserDetailsService)
+	    .and().csrf().disable();
+
+		http
          .logout()
          .logoutUrl("/logout").permitAll()//自定义退出的地址
          //.logoutSuccessUrl("/login")//退出之后跳转到注册页面
          .logoutSuccessUrl("/exit").permitAll()
-         .deleteCookies("UISESSIONORDER").permitAll()//删除当前的JSESSIONID
+         .deleteCookies("JSESSIONID").permitAll()//删除当前的JSESSIONID
          .invalidateHttpSession(true)//默认为true,用户在退出后Http session失效
-         .and();
+         .and()
+        /* .rememberMe()//启用记住我
+ 		.tokenRepository(persistentTokenRepository())
+ 		.tokenValiditySeconds(3600)//有效时间,单位秒
+ 		.userDetailsService(myUserDetailsService)*/;
+		
+        
 	}
 	/**
 	 * 不拦截静态资源的访问
@@ -139,5 +161,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 	public AuthenticationManager authenticationManagerBean() throws Exception {
 		// TODO Auto-generated method stub
 		return super.authenticationManagerBean();
+	}
+	/**
+	 * 持久token仓库
+	 * @return
+	 */
+	@Bean
+	public PersistentTokenRepository persistentTokenRepository() {
+		JdbcTokenRepositoryImpl tokenRepositoryImpl=new JdbcTokenRepositoryImpl();
+		tokenRepositoryImpl.setDataSource(dataSource);
+		return tokenRepositoryImpl;
 	}
 }
